@@ -25,10 +25,10 @@ export default function RootLayout({
             </Link>
             <nav className="flex gap-6 text-sm">
               <Link
-                href="/duel"
+                href="/"
                 className="text-zinc-400 transition hover:text-zinc-100"
               >
-                Duel
+                Home
               </Link>
               <Link
                 href="/leaderboard"

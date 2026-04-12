@@ -8,12 +8,8 @@ export default function NotFound() {
         No route matches this URL. Use{" "}
         <Link href="/" className="text-yellow-500 underline">
           Home
-        </Link>
-        ,{" "}
-        <Link href="/duel" className="text-yellow-500 underline">
-          Duel
-        </Link>
-        , or{" "}
+        </Link>{" "}
+        or{" "}
         <Link href="/leaderboard" className="text-yellow-500 underline">
           Leaderboard
         </Link>

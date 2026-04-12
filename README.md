@@ -38,7 +38,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 [Vercel’s `NOT_FOUND`](https://vercel.com/docs/errors/NOT_FOUND) means the **edge could not map your URL to a live deployment resource**. It is **not** the same as Next.js’s in-app “Page not found” page.
 
-**Runtime check (local build):** `npm run build` produces routes for `/`, `/duel`, `/leaderboard`, `/api/duel`, `/api/vote`, `/api/health`, etc. So a JSON `NOT_FOUND` on Vercel almost always points at **URL or project settings**, not missing pages in the repo.
+**Runtime check (local build):** `npm run build` produces routes for `/`, `/leaderboard`, `/api/duel`, `/api/vote`, `/api/health`, etc. (`/duel` redirects to `/`.) So a JSON `NOT_FOUND` on Vercel almost always points at **URL or project settings**, not missing pages in the repo.
 
 1. Open **`https://<your-host>/api/health`**.  
    - **200** + `{"ok":true,...}` → deployment works; the path you tried earlier was wrong or a stale deployment URL. Use **Visit** on the latest **Ready** deployment in the **Deployments** tab, or your production domain (e.g. `watchmash.vercel.app`).  
@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 3. **Settings → General** — Framework Preset **Next.js** (this repo includes **`vercel.json`** pinning `framework` + `npm run build` to reduce mis-detection).
 
-4. Valid paths include `/`, `/duel`, `/leaderboard`, `GET /api/duel`, `POST /api/vote`, **`GET /api/health`**.
+4. Valid paths include `/` (duel UI), `/leaderboard`, `GET /api/duel`, `POST /api/vote`, **`GET /api/health`**. Legacy `/duel` redirects to `/`.
 
 ## Catalog and images
 
@@ -63,7 +63,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 2. In [Vercel](https://vercel.com), **Add New Project** → import the repository.
 3. Framework Preset: **Next.js**. Root directory: repo root.
 4. **Environment Variables**: add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_*`) for Production (and Preview if desired).
-5. Deploy. Smoke-test: open `/duel`, vote a few times, confirm `/leaderboard` order changes.
+5. Deploy. Smoke-test: open `/`, vote a few times, confirm `/leaderboard` order changes.
 
 ## Reset ratings in Redis
 
