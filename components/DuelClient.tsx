@@ -95,26 +95,26 @@ export function DuelClient() {
           {voteError}
         </p>
       ) : null}
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {[a, b].map((w) => (
           <button
             key={w.id}
             type="button"
             onClick={() => void vote(w, w.id === a.id ? b : a)}
-            className="group flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 text-left transition hover:border-yellow-500/60 hover:shadow-lg hover:shadow-yellow-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-500"
+            className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 text-left transition hover:border-yellow-500/60 hover:shadow-lg hover:shadow-yellow-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-500"
             aria-label={`Pick ${w.name} as winner`}
           >
-            <div className="relative aspect-square w-full bg-zinc-950">
+            <div className="relative aspect-square w-full min-w-0 bg-zinc-950">
               <Image
                 src={w.image}
                 alt={w.name}
                 fill
                 className="object-cover transition group-hover:opacity-95"
-                sizes="(max-width: 640px) 100vw, 50vw"
+                sizes="50vw"
                 priority
               />
             </div>
-            <span className="px-4 py-3 text-sm font-medium text-zinc-100">
+            <span className="line-clamp-2 px-3 py-2 text-xs font-medium text-zinc-100 sm:px-4 sm:py-3 sm:text-sm">
               {w.name}
             </span>
           </button>
