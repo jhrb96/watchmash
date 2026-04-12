@@ -1,14 +1,6 @@
-import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { isValidWatchId } from "@/lib/catalog";
-import { COOKIE_RATE_UID } from "@/lib/config";
 import { updateEloPair, parseElo } from "@/lib/elo";
-import { ipRateKey, getClientIp } from "@/lib/ip";
-import {
-  assertUnderRateLimits,
-  cookieRateKey,
-  recordSuccessfulVotes,
-} from "@/lib/rate-limit";
 import { eloKey, getRedis } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
@@ -56,26 +48,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const ip = getClientIp(req.headers);
-  const ipKey = ipRateKey(ip);
-
-  let uid = req.cookies.get(COOKIE_RATE_UID)?.value?.trim();
-  let issuedCookie = false;
-  if (!uid) {
-    uid = randomUUID();
-    issuedCookie = true;
-  }
-
-  const ckKey = cookieRateKey(uid);
-
-  const blocked = await assertUnderRateLimits(redis, ipKey, ckKey);
-  if (blocked) {
-    return NextResponse.json(
-      { error: "rate_limit", reason: blocked },
-      { status: 429 },
-    );
-  }
-
   const wKey = eloKey(winnerId);
   const lKey = eloKey(loserId);
   const [wRaw, lRaw] = await redis.mget<[string | null, string | null]>(
@@ -91,17 +63,5 @@ export async function POST(req: NextRequest) {
   pipe.set(lKey, newLoser);
   await pipe.exec();
 
-  await recordSuccessfulVotes(redis, ipKey, ckKey);
-
-  const res = NextResponse.json({ ok: true });
-  if (issuedCookie) {
-    res.cookies.set(COOKIE_RATE_UID, uid, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }
-  return res;
+  return NextResponse.json({ ok: true });
 }

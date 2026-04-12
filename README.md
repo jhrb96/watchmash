@@ -5,8 +5,8 @@ FaceSmash-style pairwise picks for a fixed catalog of watches. Ratings use **Elo
 ## Stack
 
 - Next.js 15 (App Router) on Vercel
-- `@upstash/redis` for Elo keys `elo:<watchId>` and rate-limit counters
-- Anonymous users; limits by **IP** and **httpOnly cookie** (`watchmash_rl_uid`)
+- `@upstash/redis` for Elo keys `elo:<watchId>`
+- Anonymous users (no accounts); **no** server-side vote rate limits
 
 ## Local development
 
@@ -33,10 +33,6 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 | `KV_REST_API_TOKEN` | Yes* | Vercel KV REST token (use with `KV_REST_API_URL`) |
 
 \*Provide either the `UPSTASH_REDIS_REST_*` pair **or** the `KV_REST_API_*` pair.
-
-| `RATE_LIMIT_IP_MAX` | No | Max successful votes per IP per window (default `30`) |
-| `RATE_LIMIT_COOKIE_MAX` | No | Max successful votes per cookie per window (default `30`) |
-| `RATE_LIMIT_WINDOW_SECONDS` | No | Window length in seconds (default `3600`) |
 
 ### Vercel `404: NOT_FOUND` (plain JSON, id like `lhr1::…`)
 
@@ -66,7 +62,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 1. Push this repo to GitHub (or your Git provider).
 2. In [Vercel](https://vercel.com), **Add New Project** → import the repository.
 3. Framework Preset: **Next.js**. Root directory: repo root.
-4. **Environment Variables**: add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (and optional rate-limit vars) for Production (and Preview if desired).
+4. **Environment Variables**: add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_*`) for Production (and Preview if desired).
 5. Deploy. Smoke-test: open `/duel`, vote a few times, confirm `/leaderboard` order changes.
 
 ## Reset ratings in Redis
@@ -74,9 +70,8 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 Upstash console → your database → run Redis commands, or use `redis-cli` against your endpoint:
 
 - Delete all Elo keys: use **Data Browser** to remove keys matching `elo:*`, or run `SCAN` + `DEL` in the CLI.
-- Rate-limit keys use prefixes `rl:ip:` and `rl:ck:`; delete if you need to clear limits during testing.
 
-There is no vote history to delete.
+There is no vote history to delete. Legacy `rl:ip:*` / `rl:ck:*` keys from older deploys can be deleted in the data browser but are unused now.
 
 ## OpenSpec
 

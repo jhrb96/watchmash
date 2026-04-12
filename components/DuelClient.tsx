@@ -50,17 +50,8 @@ export function DuelClient() {
       const data = (await res.json()) as {
         ok?: boolean;
         error?: string;
-        reason?: string;
         message?: string;
       };
-      if (res.status === 429) {
-        setVoteError(
-          data.reason === "ip"
-            ? "Too many votes from this network. Try again later."
-            : "Too many votes from this browser. Try again later.",
-        );
-        return;
-      }
       if (!res.ok) {
         setVoteError(data.message ?? "Vote failed");
         return;
