@@ -33,9 +33,18 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 | `KV_REST_API_TOKEN` | Yes* | Vercel KV REST token (use with `KV_REST_API_URL`) |
 
 \*Provide either the `UPSTASH_REDIS_REST_*` pair **or** the `KV_REST_API_*` pair.
+
 | `RATE_LIMIT_IP_MAX` | No | Max successful votes per IP per window (default `30`) |
 | `RATE_LIMIT_COOKIE_MAX` | No | Max successful votes per cookie per window (default `30`) |
 | `RATE_LIMIT_WINDOW_SECONDS` | No | Window length in seconds (default `3600`) |
+
+### Vercel `404: NOT_FOUND` (plain JSON, id like `lhr1::…`)
+
+That response is generated **before** our Next.js UI runs, so you will **not** see the in-app “Page not found” screen.
+
+1. Open **`/api/health`** on the same host. If that returns `{"ok":true,"service":"watchmash"}`, the deployment is live and the earlier URL was probably a **wrong or expired path** (typo, deleted preview, or old deployment URL). Use the **latest** URL from the project’s **Deployments** tab.
+2. In project **Settings → General**, confirm **Root Directory** is empty (repo root) and **Framework Preset** is Next.js.
+3. Valid app paths include `/`, `/duel`, `/leaderboard`, `GET /api/duel`, `POST /api/vote`, and **`GET /api/health`**.
 
 ## Catalog and images
 
