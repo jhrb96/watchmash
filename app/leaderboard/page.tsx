@@ -31,9 +31,22 @@ export default async function LeaderboardPage() {
       </div>
       {offline ? (
         <p className="rounded-lg border border-amber-900/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
-          Redis is not configured. Showing default ratings only — set{" "}
-          <code className="rounded bg-zinc-900 px-1 text-xs">UPSTASH_REDIS_*</code>{" "}
-          to persist scores.
+          Redis is not configured for this Node process. Vercel env vars do not
+          apply to your laptop — add{" "}
+          <code className="rounded bg-zinc-900 px-1 text-xs">
+            UPSTASH_REDIS_REST_URL
+          </code>{" "}
+          and{" "}
+          <code className="rounded bg-zinc-900 px-1 text-xs">
+            UPSTASH_REDIS_REST_TOKEN
+          </code>{" "}
+          to <code className="rounded bg-zinc-900 px-1 text-xs">.env.local</code>{" "}
+          (copy from the Vercel dashboard or run{" "}
+          <code className="rounded bg-zinc-900 px-1 text-xs">
+            vercel env pull
+          </code>
+          ), then restart <code className="rounded bg-zinc-900 px-1 text-xs">npm run dev</code>.
+          Until then, scores stay at the default {INITIAL_ELO}.
         </p>
       ) : null}
       <ol className="divide-y divide-zinc-800 rounded-xl border border-zinc-800 bg-zinc-900/50">

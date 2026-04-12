@@ -14,6 +14,7 @@ FaceSmash-style pairwise picks for a fixed catalog of watches. Ratings use **Elo
 npm install
 cp .env.example .env.local
 # Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN from Upstash
+# Or pull from Vercel (CLI linked to the project): vercel env pull .env.local
 npm run dev
 ```
 
