@@ -14,7 +14,10 @@ FaceSmash-style pairwise picks for a fixed catalog of watches. Ratings use **Elo
 npm install
 cp .env.example .env.local
 # Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN from Upstash
-# Or pull from Vercel (CLI linked to the project): vercel env pull .env.local
+# Or pull from Vercel (CLI linked to the project). Note: `vercel env pull`
+# uses the **Development** environment by default. If your Upstash vars are
+# only on Production, either add them for Development in the Vercel UI or run:
+#   vercel env pull .env.local --environment=production
 npm run dev
 ```
 
@@ -24,8 +27,12 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `UPSTASH_REDIS_REST_URL` | Yes (for votes) | Upstash REST URL |
-| `UPSTASH_REDIS_REST_TOKEN` | Yes (for votes) | Upstash REST token |
+| `UPSTASH_REDIS_REST_URL` | Yes* | Upstash REST URL |
+| `UPSTASH_REDIS_REST_TOKEN` | Yes* | Upstash REST token |
+| `KV_REST_API_URL` | Yes* | Vercel KV REST URL (alternative naming from `vercel env pull`) |
+| `KV_REST_API_TOKEN` | Yes* | Vercel KV REST token (use with `KV_REST_API_URL`) |
+
+\*Provide either the `UPSTASH_REDIS_REST_*` pair **or** the `KV_REST_API_*` pair.
 | `RATE_LIMIT_IP_MAX` | No | Max successful votes per IP per window (default `30`) |
 | `RATE_LIMIT_COOKIE_MAX` | No | Max successful votes per cookie per window (default `30`) |
 | `RATE_LIMIT_WINDOW_SECONDS` | No | Window length in seconds (default `3600`) |

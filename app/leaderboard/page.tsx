@@ -30,24 +30,45 @@ export default async function LeaderboardPage() {
         </p>
       </div>
       {offline ? (
-        <p className="rounded-lg border border-amber-900/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
-          Redis is not configured for this Node process. Vercel env vars do not
-          apply to your laptop — add{" "}
-          <code className="rounded bg-zinc-900 px-1 text-xs">
-            UPSTASH_REDIS_REST_URL
-          </code>{" "}
-          and{" "}
-          <code className="rounded bg-zinc-900 px-1 text-xs">
-            UPSTASH_REDIS_REST_TOKEN
-          </code>{" "}
-          to <code className="rounded bg-zinc-900 px-1 text-xs">.env.local</code>{" "}
-          (copy from the Vercel dashboard or run{" "}
-          <code className="rounded bg-zinc-900 px-1 text-xs">
-            vercel env pull
-          </code>
-          ), then restart <code className="rounded bg-zinc-900 px-1 text-xs">npm run dev</code>.
-          Until then, scores stay at the default {INITIAL_ELO}.
-        </p>
+        <div className="space-y-2 rounded-lg border border-amber-900/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
+          <p>
+            Redis REST credentials are missing. Set either{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              UPSTASH_REDIS_REST_URL
+            </code>{" "}
+            +{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              UPSTASH_REDIS_REST_TOKEN
+            </code>{" "}
+            or{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              KV_REST_API_URL
+            </code>{" "}
+            +{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              KV_REST_API_TOKEN
+            </code>{" "}
+            in{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">.env.local</code>
+            , then restart{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">npm run dev</code>
+            . Until then, scores stay at {INITIAL_ELO}.
+          </p>
+          <p className="text-amber-200/90">
+            If you ran{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              vercel env pull
+            </code>{" "}
+            but still see this: it pulls the{" "}
+            <strong className="font-medium text-amber-100">Development</strong>{" "}
+            environment by default. Add the Upstash vars under Development in
+            Vercel, or run{" "}
+            <code className="rounded bg-zinc-900 px-1 text-xs">
+              vercel env pull .env.local --environment=production
+            </code>{" "}
+            if they only exist for Production.
+          </p>
+        </div>
       ) : null}
       <ol className="divide-y divide-zinc-800 rounded-xl border border-zinc-800 bg-zinc-900/50">
         {rows.map((row, index) => (
