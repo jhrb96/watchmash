@@ -40,11 +40,21 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 ### Vercel `404: NOT_FOUND` (plain JSON, id like `lhr1::…`)
 
-That response is generated **before** our Next.js UI runs, so you will **not** see the in-app “Page not found” screen.
+[Vercel’s `NOT_FOUND`](https://vercel.com/docs/errors/NOT_FOUND) means the **edge could not map your URL to a live deployment resource**. It is **not** the same as Next.js’s in-app “Page not found” page.
 
-1. Open **`/api/health`** on the same host. If that returns `{"ok":true,"service":"watchmash"}`, the deployment is live and the earlier URL was probably a **wrong or expired path** (typo, deleted preview, or old deployment URL). Use the **latest** URL from the project’s **Deployments** tab.
-2. In project **Settings → General**, confirm **Root Directory** is empty (repo root) and **Framework Preset** is Next.js.
-3. Valid app paths include `/`, `/duel`, `/leaderboard`, `GET /api/duel`, `POST /api/vote`, and **`GET /api/health`**.
+**Runtime check (local build):** `npm run build` produces routes for `/`, `/duel`, `/leaderboard`, `/api/duel`, `/api/vote`, `/api/health`, etc. So a JSON `NOT_FOUND` on Vercel almost always points at **URL or project settings**, not missing pages in the repo.
+
+1. Open **`https://<your-host>/api/health`**.  
+   - **200** + `{"ok":true,...}` → deployment works; the path you tried earlier was wrong or a stale deployment URL. Use **Visit** on the latest **Ready** deployment in the **Deployments** tab, or your production domain (e.g. `watchmash.vercel.app`).  
+   - **Same JSON 404** → fix dashboard settings below (or the hostname is not tied to this project).
+
+2. **Settings → Build & Deployment**  
+   - **Output Directory** must be **empty** for Next.js (default). If it is set to `out`, `dist`, `.next`, or anything else, Vercel will not serve the app correctly and you can see platform `NOT_FOUND`. Clear it and redeploy.  
+   - **Root Directory** must be the folder that contains this `package.json` (usually **empty** = repo root).
+
+3. **Settings → General** — Framework Preset **Next.js** (this repo includes **`vercel.json`** pinning `framework` + `npm run build` to reduce mis-detection).
+
+4. Valid paths include `/`, `/duel`, `/leaderboard`, `GET /api/duel`, `POST /api/vote`, **`GET /api/health`**.
 
 ## Catalog and images
 
