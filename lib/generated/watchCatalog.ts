@@ -35,37 +35,37 @@ export const WATCHES: Watch[] = [
   },
   {
     "id": "w-06",
-    "name": "71 9 1",
+    "name": "GrandSeiko EleganceCollection SBGK007 320610 241128 120901.jpg;quality=55;h=1…",
     "image": "/watches/w-06.png"
   },
   {
     "id": "w-07",
-    "name": "GrandSeiko EleganceCollection SBGK007 320610 241128 120901.jpg;quality=55;h=1…",
+    "name": "GrandSeiko HeritageCollection SBGY011 373158 260115 154832413.jpg;quality=55;…",
     "image": "/watches/w-07.png"
   },
   {
     "id": "w-08",
-    "name": "GrandSeiko HeritageCollection SBGY011 373158 260115 154832413.jpg;quality=55;…",
-    "image": "/watches/w-08.png"
+    "name": "omega de ville tresor co axial master chronometer small seconds 40 mm 4351340…",
+    "image": "/watches/w-08.avif"
   },
   {
     "id": "w-09",
-    "name": "omega de ville tresor co axial master chronometer small seconds 40 mm 4351340…",
-    "image": "/watches/w-09.avif"
+    "name": "Rivanera Nero Cinturino 01 960x crop center.png 1",
+    "image": "/watches/w-09.png"
   },
   {
     "id": "w-10",
-    "name": "Rivanera Nero Cinturino 01 960x crop center.png 1",
+    "name": "Screenshot 2026 04 12 at 15.04.52 1",
     "image": "/watches/w-10.png"
   },
   {
     "id": "w-11",
-    "name": "Screenshot 2026 04 12 at 15.04.52 1",
+    "name": "Screenshot 2026 04 12 at 15.08.40 1",
     "image": "/watches/w-11.png"
   },
   {
     "id": "w-12",
-    "name": "Screenshot 2026 04 12 at 15.08.40 1",
+    "name": "tudor m2639w1a0u 0001 1",
     "image": "/watches/w-12.png"
   }
 ];
