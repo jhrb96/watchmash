@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DuelClient } from "@/components/DuelClient";
+import { TournamentClient } from "@/components/TournamentClient";
 
 export default function HomePage() {
   return (
@@ -9,8 +9,9 @@ export default function HomePage() {
           Which watch wins?
         </h1>
         <p className="max-w-xl text-zinc-400">
-          Tap the watch you prefer. Scores use Elo; nothing is stored except
-          current ratings in Redis.
+          Each visit runs a fresh random single-elimination tournament. Only the
+          champion increments their win count in Redis — tap through until one
+          watch remains.
         </p>
         <Link
           href="/leaderboard"
@@ -19,8 +20,8 @@ export default function HomePage() {
           View leaderboard
         </Link>
       </div>
-      <section id="mash" aria-label="Pick a watch">
-        <DuelClient />
+      <section id="mash" aria-label="Tournament picks">
+        <TournamentClient />
       </section>
     </div>
   );

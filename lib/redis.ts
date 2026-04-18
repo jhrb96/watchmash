@@ -20,9 +20,19 @@ function resolveRestCredentials(): { url: string; token: string } | null {
 export function getRedis(): Redis | null {
   const creds = resolveRestCredentials();
   if (!creds) return null;
-  return new Redis({ url: creds.url, token: creds.token });
+  return new Redis({
+    url: creds.url,
+    token: creds.token,
+    // Session CAS compares raw JSON strings; avoid GET auto-parsing strings.
+    automaticDeserialization: false,
+  });
 }
 
-export function eloKey(watchId: string): string {
-  return `elo:${watchId}`;
+export function winsKey(watchId: string): string {
+  return `wins:${watchId}`;
+}
+
+/** Server-backed bracket state; short TTL so abandons expire. */
+export function tournamentSessionKey(sessionId: string): string {
+  return `tournament:session:${sessionId}`;
 }

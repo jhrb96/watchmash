@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { INITIAL_ELO } from "@/lib/config";
 import {
   fetchLeaderboard,
   leaderboardWithoutRedis,
   type LeaderboardRow,
 } from "@/lib/leaderboard";
+import { genericLeaderboardWatchName } from "@/lib/leaderboardDisplay";
 import { getRedis } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
@@ -25,8 +25,8 @@ export default async function LeaderboardPage() {
       <div>
         <h1 className="text-2xl font-semibold text-zinc-50">Leaderboard</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Global ranking by Elo (starting rating {INITIAL_ELO} until votes move
-          scores)
+          Tournament wins — each full bracket crowns one champion; wins are
+          stored per watch id in Redis.
         </p>
       </div>
       {offline ? (
@@ -52,7 +52,7 @@ export default async function LeaderboardPage() {
             <code className="rounded bg-zinc-900 px-1 text-xs">.env.local</code>
             , then restart{" "}
             <code className="rounded bg-zinc-900 px-1 text-xs">npm run dev</code>
-            . Until then, scores stay at {INITIAL_ELO}.
+            . Until then, all watches show 0 wins.
           </p>
           <p className="text-amber-200/90">
             If you ran{" "}
@@ -71,7 +71,9 @@ export default async function LeaderboardPage() {
         </div>
       ) : null}
       <ol className="divide-y divide-zinc-800 rounded-xl border border-zinc-800 bg-zinc-900/50">
-        {rows.map((row, index) => (
+        {rows.map((row, index) => {
+          const displayName = genericLeaderboardWatchName(row.id);
+          return (
           <li
             key={row.id}
             className="flex items-center gap-4 px-4 py-3 first:rounded-t-xl last:rounded-b-xl"
@@ -82,21 +84,22 @@ export default async function LeaderboardPage() {
             <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-950">
               <Image
                 src={row.image}
-                alt={row.name}
+                alt={displayName}
                 fill
                 className="object-cover"
                 sizes="56px"
               />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-zinc-100">{row.name}</p>
+              <p className="truncate font-medium text-zinc-100">{displayName}</p>
               <p className="text-xs text-zinc-500">{row.id}</p>
             </div>
             <span className="tabular-nums text-sm font-semibold text-yellow-500">
-              {row.elo}
+              {row.wins}
             </span>
           </li>
-        ))}
+          );
+        })}
       </ol>
     </div>
   );

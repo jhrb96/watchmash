@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Watchmash",
-  description: "Pick your favorite watch — pairwise Elo ranking",
+  description: "Random single-elimination watch tournaments — wins in Redis",
 };
 
 export default function RootLayout({

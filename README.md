@@ -1,11 +1,11 @@
 # Watchmash
 
-FaceSmash-style pairwise picks for a fixed catalog of watches. Ratings use **Elo** stored in **Redis** (Upstash REST). **Votes are not logged** — only current scores per watch id.
+Random **single-elimination tournaments** over a fixed catalog of watches. Each run shuffles a power-of-two subset; server sessions in **Redis** advance the bracket; only the **champion** increments **`wins:<watchId>`**.
 
 ## Stack
 
 - Next.js 15 (App Router) on Vercel
-- `@upstash/redis` for Elo keys `elo:<watchId>`
+- `@upstash/redis` for `tournament:session:*` and `wins:<watchId>`
 - Anonymous users (no accounts); **no** server-side vote rate limits
 
 ## Local development
@@ -21,7 +21,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboard` shows default ratings (1500); `/api/vote` returns `503` until env vars are set.
+Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboard` shows **0 wins** for every watch; tournament APIs return `503` until env vars are set.
 
 ## Environment variables
 
@@ -38,7 +38,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 [Vercel’s `NOT_FOUND`](https://vercel.com/docs/errors/NOT_FOUND) means the **edge could not map your URL to a live deployment resource**. It is **not** the same as Next.js’s in-app “Page not found” page.
 
-**Runtime check (local build):** `npm run build` produces routes for `/`, `/leaderboard`, `/api/duel`, `/api/vote`, `/api/health`, etc. (`/duel` redirects to `/`.) So a JSON `NOT_FOUND` on Vercel almost always points at **URL or project settings**, not missing pages in the repo.
+**Runtime check (local build):** `npm run build` produces routes for `/`, `/leaderboard`, `/api/tournament/start`, `/api/tournament/pick`, `/api/health`, etc. (`/duel` redirects to `/`.) So a JSON `NOT_FOUND` on Vercel almost always points at **URL or project settings**, not missing pages in the repo.
 
 1. Open **`https://<your-host>/api/health`**.  
    - **200** + `{"ok":true,...}` → deployment works; the path you tried earlier was wrong or a stale deployment URL. Use **Visit** on the latest **Ready** deployment in the **Deployments** tab, or your production domain (e.g. `watchmash.vercel.app`).  
@@ -50,12 +50,11 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 3. **Settings → General** — Framework Preset **Next.js** (this repo includes **`vercel.json`** pinning `framework` + `npm run build` to reduce mis-detection).
 
-4. Valid paths include `/` (duel UI), `/leaderboard`, `GET /api/duel`, `POST /api/vote`, **`GET /api/health`**. Legacy `/duel` redirects to `/`.
+4. Valid paths include `/` (tournament UI), `/leaderboard`, **`POST /api/tournament/start`**, **`POST /api/tournament/pick`**, **`GET /api/health`**. Legacy `/duel` redirects to `/`.
 
 ## Catalog and images
 
-- Catalog: `lib/catalog.ts` — 33 watches `w-01` … `w-33` with images under `public/watches/`.
-- Source assets live in `watch images/`; copies used at runtime are in `public/watches/` (stable filenames).
+- Catalog: generated from **`watch images/`** into **`lib/generated/watchCatalog.ts`** and **`public/watches/w-*`** — run **`npm run sync:watches`** after adding or removing images, then commit the generated files.
 
 ## Deploy on Vercel
 
@@ -63,15 +62,15 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 2. In [Vercel](https://vercel.com), **Add New Project** → import the repository.
 3. Framework Preset: **Next.js**. Root directory: repo root.
 4. **Environment Variables**: add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_*`) for Production (and Preview if desired).
-5. Deploy. Smoke-test: open `/`, vote a few times, confirm `/leaderboard` order changes.
+5. Deploy. Smoke-test: finish a tournament on `/`, confirm one watch’s **wins** increment on `/leaderboard`.
 
-## Reset ratings in Redis
+## Reset data in Redis
 
 Upstash console → your database → run Redis commands, or use `redis-cli` against your endpoint:
 
-- Delete all Elo keys: use **Data Browser** to remove keys matching `elo:*`, or run `SCAN` + `DEL` in the CLI.
+- Remove **`wins:*`** to zero tournament wins, and/or **`tournament:session:*`** to clear stale sessions.
 
-There is no vote history to delete. Legacy `rl:ip:*` / `rl:ck:*` keys from older deploys can be deleted in the data browser but are unused now.
+Legacy `elo:*` keys from older deploys can be deleted but are no longer read by the app.
 
 ## OpenSpec
 

@@ -1,2 +1,2 @@
-export const INITIAL_ELO = 1500;
-export const ELO_K = 32;
+/** TTL for `tournament:session:*` keys (seconds). */
+export const TOURNAMENT_SESSION_TTL_SECONDS = 2700;
