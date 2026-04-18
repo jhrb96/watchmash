@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "sync:watches": "node scripts/sync-watch-catalog.mjs",
+    "prebuild": "npm run sync:watches",
+    "predev": "npm run sync:watches",
     "reset:leaderboard": "node scripts/reset-leaderboard.mjs",
     "dev": "next dev --turbopack",
     "build": "next build",

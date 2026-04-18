@@ -1,6 +1,6 @@
 # Watchmash
 
-Random **single-elimination tournaments** over a fixed catalog of watches. Each run shuffles a power-of-two subset; server sessions in **Redis** advance the bracket; only the **champion** increments **`wins:<watchId>`**.
+Random **single-elimination tournaments** over a fixed catalog of watches. Each run shuffles **every** catalog watch into the bracket (with implicit byes when the count is not a power of two); server sessions in **Redis** advance the bracket; only the **champion** increments **`wins:<watchId>`**.
 
 ## Stack
 
@@ -54,7 +54,8 @@ Open [http://localhost:3000](http://localhost:3000). Without Redis, `/leaderboar
 
 ## Catalog and images
 
-- Catalog: generated from **`watch images/`** into **`lib/generated/watchCatalog.ts`** and **`public/watches/w-*`** — run **`npm run sync:watches`** after adding or removing images, then commit the generated files.
+- Catalog: generated from **`watch images/`** into **`lib/generated/watchCatalog.ts`** and **`public/watches/w-*`**.
+- **`npm run build`** and **`npm run dev`** each run **`npm run sync:watches` first** (`prebuild` / `predev`), so generated files match **`watch images/`** before Next starts. After changing sources, commit the updated **`lib/generated/watchCatalog.ts`** and **`public/watches/`** so Git stays the source of truth between machines.
 
 ## Deploy on Vercel
 
