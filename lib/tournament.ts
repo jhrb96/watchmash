@@ -58,6 +58,12 @@ function advanceBracketAfterValidPick(s: TournamentSession, winnerId: string): v
       continue;
     }
 
+    /** Odd-sized round: lone waiter joins winners (bye), then promotion continues. */
+    if (s.roundQueue.length === 1 && s.nextRound.length > 0) {
+      s.nextRound.push(s.roundQueue.shift()!);
+      continue;
+    }
+
     if (s.roundQueue.length === 1 && s.nextRound.length === 0) {
       s.status = "complete";
       s.championId = s.roundQueue[0]!;

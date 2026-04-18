@@ -13,14 +13,6 @@ export function isValidWatchId(id: string): boolean {
   return byId.has(id);
 }
 
-/** Largest power of two ≤ n (n ≥ 1). */
-export function largestPowerOfTwoAtMost(n: number): number {
-  if (n < 1) return 0;
-  let p = 1;
-  while (p * 2 <= n) p *= 2;
-  return p;
-}
-
 function shuffleWatchArray(watches: Watch[]): Watch[] {
   const out = [...watches];
   for (let i = out.length - 1; i > 0; i--) {
@@ -31,20 +23,14 @@ function shuffleWatchArray(watches: Watch[]): Watch[] {
 }
 
 /**
- * Picks M = largest power of two ≤ catalog size distinct watches, uniformly
- * among all M-subsets (shuffle index permutation then take first M), then
- * shuffles participant order for the bracket.
+ * Every catalog watch enters the bracket (shuffled order). Non-power-of-two
+ * sizes use implicit byes: when one player is left waiting in a round while
+ * others have already advanced, they carry forward without an extra match
+ * (see `advanceBracketAfterValidPick` in `lib/tournament.ts`).
  */
 export function pickTournamentParticipants(): Watch[] {
   if (WATCHES.length < 2) {
     throw new Error("Catalog needs at least two watches");
   }
-  const m = largestPowerOfTwoAtMost(WATCHES.length);
-  const indices = WATCHES.map((_, i) => i);
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j]!, indices[i]!];
-  }
-  const chosen = indices.slice(0, m).map((i) => WATCHES[i]!);
-  return shuffleWatchArray(chosen);
+  return shuffleWatchArray([...WATCHES]);
 }
